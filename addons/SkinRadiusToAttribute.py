@@ -13,6 +13,10 @@ class SkinModifierToAttributeOperator(Operator):
     bl_idname = "object.skinradiustoattribute"
     bl_label = "Skin radius to attribute"
 
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
     def execute(self, context: bpy.context) -> Set[str]:
         mesh: Mesh = context.active_object.data
         radius_values: List[float] = [v.radius[0] for v in mesh.skin_vertices[0].data]

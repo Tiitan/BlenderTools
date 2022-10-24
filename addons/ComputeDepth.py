@@ -16,7 +16,7 @@ class ComputeDepthOperator(Operator):
     bl_idname = "object.computedepth"
     bl_label = "compute depth"
 
-    def compute_depth(self, skin_layer_data: List[MeshSkinVertex], bm: bmesh) -> ndarray[int]:
+    def _compute_depth(self, skin_layer_data: List[MeshSkinVertex], bm: bmesh) -> ndarray[int]:
         depth_values = zeros(len(bm.verts), dtype=int)
         current_depth = 1
         vertices_index = [vi for vi, msv in enumerate(skin_layer_data) if msv.use_root]
@@ -32,6 +32,10 @@ class ComputeDepthOperator(Operator):
 
         return depth_values
 
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
     def execute(self, context: bpy.context) -> Set[str]:
         mesh: Mesh = context.active_object.data
         skin_layer: MeshSkinVertexLayer = mesh.skin_vertices[0]
@@ -40,7 +44,7 @@ class ComputeDepthOperator(Operator):
         bm.from_mesh(mesh)  # fill it in from a Mesh
         bm.verts.ensure_lookup_table()
 
-        depth_values = self.compute_depth(skin_layer.data, bm)
+        depth_values = self._compute_depth(skin_layer.data, bm)
 
         print(depth_values)
         mesh.attributes["Depth"].data.foreach_set("value", depth_values)
