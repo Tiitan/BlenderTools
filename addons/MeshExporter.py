@@ -7,6 +7,14 @@ from bpy.types import Mesh, Operator, PropertyGroup
 from bpy_extras.io_utils import ExportHelper
 
 
+bl_info = {
+    "name": "Flexible mesh exporter",
+    "blender": (3, 1, 0),
+    "category": "Object",
+}
+
+
+
 _BlenderTypeMap: Dict[str, Dict[str, Union[str, int]]] = {
     "FLOAT": {"type": "float32", "count": 1},
     "INT": {"type": "int32", "count": 1},
